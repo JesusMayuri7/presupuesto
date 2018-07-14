@@ -1,0 +1,213 @@
+
+<div class="ui-g">
+    <div class="ui-g-12 ">
+<p-dataTable [value]="trabajador" #traba [style]="{'font-size': '0.7em'}" expandableRows="true" scrollable="true" scrollHeight="620px"  
+    rowGroupMode="subheader" groupField="programa_pptal" selectionMode="single" [loading]="loading" loadingIcon="fa-spinner">
+    <p-header>
+          Personal - Cas</p-header>   
+    
+    <p-column expander="true" styleClass="col-icon" [style]="{'width':'2%','text-align':'center'}"></p-column>
+      <ng-template pTemplate="rowgroupheader" let-rowData style="text-align:center;">          
+          <span style="text-align:center;color:blue;">{{rowData['programa_pptal']}}</span>
+      </ng-template>
+    <p-column field="fuente" header="F" sortable="true" [style]="{'width':'4%','text-align':'center'}" [filter]="true"></p-column>
+    <p-column field="meta" header="Meta" sortable="true" [style]="{'width':'6%','text-align':'center'}" [filter]="true"></p-column>
+    <!--<p-column field="programa_pptal" header="Programa" sortable="true" [style]="{'width':'20%'}" [filter]="true" filterPlaceholder="Search"></p-column> -->
+    <p-column field="PIM" [style]="{'width':'8%'}" footer="true">
+      <ng-template pTemplate="header">
+           <span style="color:blue;">PIM</span>
+      </ng-template>      
+      <ng-template let-col let-data="rowData" pTemplate="body" >
+            <span>{{ data[col.field] | number : '1.2-2'}}</span>
+      </ng-template>
+      <ng-template let-col let-data="rowData" pTemplate="footer">
+              <span style="text-align:center;font-weight:bold;">{{totalesPim | number : '1.2-2'}} </span>
+      </ng-template>   
+   </p-column>
+   <p-column field="23.28.11C" [style]="{'width':'8%','text-align':'right'}" header="Certificado"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template> 
+   </p-column>
+   <p-column field="23.28.11E" [style]="{'width':'8%','text-align':'right'}" header="Ejecutado"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template> 
+   </p-column>
+    <p-column field="23.28.11Y" [style]="{'width':'8%','text-align':'right'}" header="Proyecion"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template> 
+   </p-column>
+  <p-column field="Total" [style]="{'width':'8%','text-align':'right'}" header="Total"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template> 
+   </p-column>
+  <p-column field="SALDO" [style]="{'width':'8%','text-align':'right'}" header="Saldo"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template> 
+        <ng-template let-col let-data="rowData" pTemplate="footer">
+               <span style="text-align:right;font-weight:bold;">{{totalesSal | number : '1.2-2'}} </span>
+        </ng-template> 
+   </p-column>
+      <p-column field="enero" [style]="{'width':'8%','text-align':'right'}" header="Enero"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+      <span>{{ data[col.field] | number : '1.2-2'}}</span>
+   </ng-template>
+  </p-column>
+  <p-column field="febrero" [style]="{'width':'8%','text-align':'right'}" header="Febrero" >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Marzo" [style]="{'width':'8%','text-align':'right'}" header="Marzo" >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Abril" [style]="{'width':'8%','text-align':'right'}" header="Abril"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Mayo" [style]="{'width':'8%','text-align':'right'}" header="Mayo"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Junio" [style]="{'width':'8%','text-align':'right'}" header="Junio"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Julio" [style]="{'width':'8%','text-align':'right'}" header="Julio"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Agosto" [style]="{'width':'8%','text-align':'right'}" header="Agosto"  >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Setiembre" [style]="{'width':'8%','text-align':'right'}" header="Setiembre" >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Octubre" [style]="{'width':'8%','text-align':'right'}" header="Octubre" >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Noviembre" [style]="{'width':'8%','text-align':'right'}" header="Noviembre" >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+  <p-column field="Diciembre" [style]="{'width':'8%','text-align':'right'}" header="Diciembre" >
+        <ng-template let-col let-data="rowData" pTemplate="body">
+        <span>{{ data[col.field] | number : '1.2-2'}}</span>
+        </ng-template>
+  </p-column>
+
+   <ng-template pTemplate="rowgroupfooter" let-col let-data>
+        <td colspan="3" style="text-align:right">{{calculateGroupTotal(data['programa_pptal'],data['fuente'])}} Totales</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalPim | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalCer | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalEje | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalPro | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalTot | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalSal | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;" >{{ totalEne | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalFeb | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalMar | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalAbr | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalMay | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalJun | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalJul | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalAgo | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalSet | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalOct | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalNov | number : '1.2-2'}}</td>
+        <td style="text-align:right;font-weight:bold;">{{ totalDic | number : '1.2-2'}}</td>
+      </ng-template>
+      <ng-template let-data pTemplate="rowexpansion">             
+      
+      <p-dataTable [value]="data.casanalisisdetalle" [style]="{'font-size': '0.9em'}">            
+           <p-column header="Foto" [style]="{'width':'5%','text-align':'center'}">
+           <ng-template let-item="rowData" pTemplate="body">                  
+             <img [defaultImage]="defaultImage" [lazyLoad]="'http://programacion.dev/api/trabajador/'+item.dni" [errorImage]="defaultImage"  style="width: 60px; height: 60px" />
+            </ng-template>
+            </p-column>    
+            <p-column field="nombre" header="Nombres"></p-column>
+             <p-column field="establecimiento" header="Establecimiento"></p-column>
+             <p-column field="cargo" header="Cargo"></p-column>
+            <p-column field="Inicio" header="Inicio" [style]="{'font-size': '1.0em','width':'5%','text-align':'center'}">></p-column>
+            <p-column field="Fin" header="Fin" [style]="{'font-size': '1.0em','width':'5%','text-align':'center'}">></p-column>
+            <p-column field="enero" header="Enero" [style]="{'font-size': '1.0em','width':'4%','text-align':'right'}">
+                  <ng-template let-col let-data="rowData" pTemplate="body">
+                  <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+                  </ng-template>
+            </p-column>            
+            <p-column field="febrero" header="Febrero" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+            <p-column field="Marzo" header="Marzo" [style]="{'width':'4%','text-align':'right'}">
+                   <ng-template let-col let-data="rowData" pTemplate="body">
+                  <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+                  </ng-template>
+            </p-column>   
+            <p-column field="Abril" header="Abril" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+            <p-column field="Mayo" header="Mayo" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+            <p-column field="Junio" header="Junio" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+            <p-column field="Julio" header="Julio" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+            <p-column field="Agosto" header="Agosto" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+            <p-column field="Setiembre" header="Setiembre" [style]="{'width':'4%','text-align':'right'}">
+                   <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template></p-column>   
+            <p-column field="Octubre" header="Octubre" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+            <p-column field="Noviembre" header="Noviembre" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+            <p-column field="Diciembre" header="Diciembre" [style]="{'width':'4%','text-align':'right'}">
+             <ng-template let-col let-data="rowData" pTemplate="body">
+            <span [style.color]="data[col.field] > 0 ? 'blue' :'red'">{{ data[col.field] | number : '1.2-2'}}</span>
+            </ng-template>      
+            </p-column>   
+
+      </p-dataTable>
+    </ng-template>
+</p-dataTable></div>
+</div>

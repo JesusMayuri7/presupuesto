@@ -6,10 +6,12 @@
   "apps": [
     {
       "root": "src",
-      "outDir": "dist",
+      "outDir": "../public",
       "assets": [
         "assets",
-        "favicon.ico"
+        "favicon.ico",
+        "index.php",
+        ".htaccess"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -17,9 +19,12 @@
       "test": "test.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
-      "prefix": "app",
-      "styles": [
-        "styles.css"
+      "prefix": "zd",
+      "styles": [        
+         "../node_modules/font-awesome/css/font-awesome.min.css",
+         "../node_modules/primeng/resources/primeng.min.css",
+         "../node_modules/primeng/resources/themes/omega/theme.css",
+         "styles.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",
