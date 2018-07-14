@@ -22,6 +22,7 @@ $app->get('/', function () use ($app) {
 });
 
 $app->get('/api/cas/analisis','CasController@remuneraciones'); 
+$app->get('/api/activos/cap/{anio}','CapController@index'); 
 $app->post('/api/cas/pdt_cas','CasController@pdt_cas'); 
 $app->get('/api/todo','TodoController@index'); 
 $app->post('/api/todo','TodoController@save'); 

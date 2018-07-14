@@ -11,7 +11,7 @@ exports.LazyLoadImageDirective = lazyload_image_directive_1.LazyLoadImageDirecti
 var lazyload_image_module_1 = __webpack_require__("../../../../ng-lazyload-image/src/lazyload-image.module.js");
 exports.LazyLoadImageModule = lazyload_image_module_1.LazyLoadImageModule;
 exports.default = lazyload_image_module_1.LazyLoadImageModule;
-
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -37,23 +37,23 @@ var ReplaySubject_1 = __webpack_require__("../../../../rxjs/ReplaySubject.js");
 var core_1 = __webpack_require__("../../../core/@angular/core.es5.js");
 var scroll_listener_1 = __webpack_require__("../../../../ng-lazyload-image/src/scroll-listener.js");
 var lazyload_image_1 = __webpack_require__("../../../../ng-lazyload-image/src/lazyload-image.js");
-var target = typeof window !== 'undefined' ? window : undefined;
+var windowTarget = typeof window !== 'undefined' ? window : undefined;
 var LazyLoadImageDirective = (function () {
     function LazyLoadImageDirective(el, ngZone) {
-        this.scrollTarget = target;
         this.onLoad = new core_1.EventEmitter();
         this.elementRef = el;
         this.ngZone = ngZone;
         this.propertyChanges$ = new ReplaySubject_1.ReplaySubject();
     }
-    LazyLoadImageDirective.prototype.ngOnChanges = function () {
+    LazyLoadImageDirective.prototype.ngOnChanges = function (changes) {
         this.propertyChanges$.next({
             lazyImage: this.lazyImage,
             defaultImage: this.defaultImage,
             errorImage: this.errorImage,
             scrollTarget: this.scrollTarget,
             scrollObservable: this.scrollObservable,
-            offset: this.offset,
+            offset: this.offset | 0,
+            useSrcset: this.useSrcset
         });
     };
     LazyLoadImageDirective.prototype.ngAfterContentInit = function () {
@@ -67,11 +67,11 @@ var LazyLoadImageDirective = (function () {
                 scrollObservable = _this.scrollObservable.startWith('');
             }
             else {
-                scrollObservable = scroll_listener_1.getScrollListener(_this.scrollTarget);
+                scrollObservable = scroll_listener_1.getScrollListener(_this.scrollTarget || windowTarget);
             }
             _this.scrollSubscription = _this.propertyChanges$
                 .debounceTime(10)
-                .switchMap(function (props) { return scrollObservable.let(lazyload_image_1.lazyLoadImage(_this.elementRef.nativeElement, props.lazyImage, props.defaultImage, props.errorImage, props.offset)); })
+                .switchMap(function (props) { return scrollObservable.let(lazyload_image_1.lazyLoadImage(_this.elementRef.nativeElement, props.lazyImage, props.defaultImage, props.errorImage, props.offset, props.useSrcset, props.scrollTarget)); })
                 .subscribe(function (success) { return _this.onLoad.emit(success); });
         });
     };
@@ -105,6 +105,10 @@ var LazyLoadImageDirective = (function () {
         __metadata("design:type", Number)
     ], LazyLoadImageDirective.prototype, "offset", void 0);
     __decorate([
+        core_1.Input(),
+        __metadata("design:type", Boolean)
+    ], LazyLoadImageDirective.prototype, "useSrcset", void 0);
+    __decorate([
         core_1.Output(),
         __metadata("design:type", core_1.EventEmitter)
     ], LazyLoadImageDirective.prototype, "onLoad", void 0);
@@ -117,7 +121,7 @@ var LazyLoadImageDirective = (function () {
     return LazyLoadImageDirective;
 }());
 exports.LazyLoadImageDirective = LazyLoadImageDirective;
-
+//# sourceMappingURL=lazyload-image.directive.js.map
 
 /***/ }),
 
@@ -135,27 +139,52 @@ __webpack_require__("../../../../rxjs/add/operator/mergeMap.js");
 __webpack_require__("../../../../rxjs/add/operator/catch.js");
 __webpack_require__("../../../../rxjs/add/observable/of.js");
 var Observable_1 = __webpack_require__("../../../../rxjs/Observable.js");
-function isVisible(element, threshold, _window) {
+var rect_1 = __webpack_require__("../../../../ng-lazyload-image/src/rect.js");
+function isVisible(element, threshold, _window, scrollContainer) {
     if (threshold === void 0) { threshold = 0; }
-    if (_window === void 0) { _window = window; }
-    var _a = element.getBoundingClientRect(), top = _a.top, bottom = _a.bottom, left = _a.left, right = _a.right;
-    var height = _window.innerHeight;
-    var width = _window.innerWidth;
-    var elementLargerThenViewport = top <= threshold && bottom >= (height - threshold) && left <= threshold && right >= (width - threshold);
-    var topInsideViewport = top <= (height - threshold) && top >= threshold;
-    var bottomInsideViewport = bottom >= threshold && bottom <= (height - threshold);
-    var rightsideInViewport = right >= threshold && right <= (width - threshold);
-    var leftsideInViewport = left <= (width - threshold) && left >= threshold;
-    return (elementLargerThenViewport ||
-        ((topInsideViewport || bottomInsideViewport) &&
-            (rightsideInViewport || leftsideInViewport)));
+    var elementBounds = rect_1.Rect.fromElement(element);
+    var windowBounds = rect_1.Rect.fromWindow(_window);
+    elementBounds.inflate(threshold);
+    if (scrollContainer) {
+        var scrollContainerBounds = rect_1.Rect.fromElement(scrollContainer);
+        var intersection = scrollContainerBounds.getIntersectionWith(windowBounds);
+        return elementBounds.intersectsWith(intersection);
+    }
+    else {
+        return elementBounds.intersectsWith(windowBounds);
+    }
 }
 exports.isVisible = isVisible;
-function loadImage(imagePath) {
+function isChildOfPicture(element) {
+    return Boolean(element.parentElement && element.parentElement.nodeName.toLowerCase() === 'picture');
+}
+exports.isChildOfPicture = isChildOfPicture;
+function isImageElement(element) {
+    return element.nodeName.toLowerCase() === 'img';
+}
+exports.isImageElement = isImageElement;
+function loadImage(element, imagePath, useSrcset) {
+    var img;
+    if (isImageElement(element) && isChildOfPicture(element)) {
+        var parentClone = element.parentNode.cloneNode(true);
+        img = parentClone.getElementsByTagName('img')[0];
+        setSourcesToLazy(img);
+        setImage(img, imagePath, useSrcset);
+    }
+    else {
+        img = new Image();
+        if (isImageElement(element) && element.sizes) {
+            img.sizes = element.sizes;
+        }
+        if (useSrcset) {
+            img.srcset = imagePath;
+        }
+        else {
+            img.src = imagePath;
+        }
+    }
     return Observable_1.Observable
         .create(function (observer) {
-        var img = new Image();
-        img.src = imagePath;
         img.onload = function () {
             observer.next(imagePath);
             observer.complete();
@@ -165,16 +194,47 @@ function loadImage(imagePath) {
         };
     });
 }
-function setImage(element, imagePath) {
-    var isImgNode = element.nodeName.toLowerCase() === 'img';
-    if (isImgNode) {
-        element.src = imagePath;
+function setImage(element, imagePath, useSrcset) {
+    if (isImageElement(element)) {
+        if (useSrcset) {
+            element.srcset = imagePath;
+        }
+        else {
+            element.src = imagePath;
+        }
     }
     else {
         element.style.backgroundImage = "url('" + imagePath + "')";
     }
     return element;
 }
+function setSources(attrName) {
+    return function (image) {
+        var sources = image.parentElement.getElementsByTagName('source');
+        for (var i = 0; i < sources.length; i++) {
+            var attrValue = sources[i].getAttribute(attrName);
+            if (attrValue) {
+                sources[i].srcset = attrValue;
+            }
+        }
+    };
+}
+var setSourcesToDefault = setSources('defaultImage');
+var setSourcesToLazy = setSources('lazyLoad');
+var setSourcesToError = setSources('errorImage');
+function setImageAndSources(setSourcesFn) {
+    return function (element, imagePath, useSrcset) {
+        if (isImageElement(element) && isChildOfPicture(element)) {
+            setSourcesFn(element);
+        }
+        if (imagePath) {
+            setImage(element, imagePath, useSrcset);
+        }
+    };
+}
+var setImageAndSourcesToDefault = setImageAndSources(setSourcesToDefault);
+var setImageAndSourcesToLazy = setImageAndSources(setSourcesToLazy);
+var setImageAndSourcesToError = setImageAndSources(setSourcesToError);
 function setLoadedStyle(element) {
     var styles = element.className
         .split(' ')
@@ -184,29 +244,29 @@ function setLoadedStyle(element) {
     element.className = styles.join(' ');
     return element;
 }
-function lazyLoadImage(image, imagePath, defaultImagePath, errorImgPath, offset) {
-    if (defaultImagePath) {
-        setImage(image, defaultImagePath);
+function lazyLoadImage(element, imagePath, defaultImagePath, errorImgPath, offset, useSrcset, scrollContainer) {
+    if (useSrcset === void 0) { useSrcset = false; }
+    setImageAndSourcesToDefault(element, defaultImagePath, useSrcset);
+    if (element.className && element.className.includes('ng-lazyloaded')) {
+        element.className = element.className.replace('ng-lazyloaded', '');
     }
     return function (scrollObservable) {
         return scrollObservable
-            .filter(function () { return isVisible(image, offset); })
+            .filter(function () { return isVisible(element, offset, window, scrollContainer); })
             .take(1)
-            .mergeMap(function () { return loadImage(imagePath); })
-            .do(function () { return setImage(image, imagePath); })
+            .mergeMap(function () { return loadImage(element, imagePath, useSrcset); })
+            .do(function () { return setImageAndSourcesToLazy(element, imagePath, useSrcset); })
             .map(function () { return true; })
             .catch(function () {
-            if (errorImgPath) {
-                setImage(image, errorImgPath);
-            }
-            image.className += ' ng-failed-lazyloaded';
+            setImageAndSourcesToError(element, errorImgPath, useSrcset);
+            element.className += ' ng-failed-lazyloaded';
             return Observable_1.Observable.of(false);
         })
-            .do(function () { return setLoadedStyle(image); });
+            .do(function () { return setLoadedStyle(element); });
     };
 }
 exports.lazyLoadImage = lazyLoadImage;
-
+//# sourceMappingURL=lazyload-image.js.map
 
 /***/ }),
 
@@ -236,7 +296,59 @@ var LazyLoadImageModule = (function () {
     return LazyLoadImageModule;
 }());
 exports.LazyLoadImageModule = LazyLoadImageModule;
+//# sourceMappingURL=lazyload-image.module.js.map
 
+/***/ }),
+
+/***/ "../../../../ng-lazyload-image/src/rect.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Rect = (function () {
+    function Rect(left, top, right, bottom) {
+        this.left = left;
+        this.top = top;
+        this.right = right;
+        this.bottom = bottom;
+    }
+    Rect.fromElement = function (element) {
+        var _a = element.getBoundingClientRect(), left = _a.left, top = _a.top, right = _a.right, bottom = _a.bottom;
+        return new Rect(left, top, right, bottom);
+    };
+    Rect.fromWindow = function (_window) {
+        return new Rect(0, 0, _window.innerWidth, _window.innerHeight);
+    };
+    Rect.prototype.inflate = function (inflateBy) {
+        this.left -= inflateBy;
+        this.top -= inflateBy;
+        this.right += inflateBy;
+        this.bottom += inflateBy;
+    };
+    Rect.prototype.intersectsWith = function (rect) {
+        return (rect.left < this.right) &&
+            (this.left < rect.right) &&
+            (rect.top < this.bottom) &&
+            (this.top < rect.bottom);
+    };
+    Rect.prototype.getIntersectionWith = function (rect) {
+        var left = Math.max(this.left, rect.left);
+        var top = Math.max(this.top, rect.top);
+        var right = Math.min(this.right, rect.right);
+        var bottom = Math.min(this.bottom, rect.bottom);
+        if (right >= left && bottom >= top) {
+            return new Rect(left, top, right, bottom);
+        }
+        else {
+            return Rect.empty;
+        }
+    };
+    Rect.empty = new Rect(0, 0, 0, 0);
+    return Rect;
+}());
+exports.Rect = Rect;
+//# sourceMappingURL=rect.js.map
 
 /***/ }),
 
@@ -280,7 +392,7 @@ exports.getScrollListener = function (scrollTarget) {
     scrollListeners.set(scrollTarget, listener);
     return listener;
 };
-
+//# sourceMappingURL=scroll-listener.js.map
 
 /***/ })
 
