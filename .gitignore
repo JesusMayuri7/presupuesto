@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
@@ -40,3 +41,12 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+=======
+/vendor
+/.idea
+Homestead.json
+Homestead.yaml
+.env
+/node_modules
+/angular2
+>>>>>>> 688612cef1f88fe19eb59bf456fa9d04d5682511
