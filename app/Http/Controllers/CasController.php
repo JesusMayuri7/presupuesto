@@ -15,7 +15,7 @@ class CasController extends Controller
     public function pdt_cas(Request $request){
         $data = DB::select('CALL pdt_cas(?,?)', array($request->input('dni'),$request->input('fecha')));
         return response()->json([
-            "status" => 1,
+            "status" => $request,
             "data" =>$data
         ]);
     }
