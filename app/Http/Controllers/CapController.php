@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 class CapController extends Controller
 {
     public function index($anio){
-        $data = DB::select('CALL sp_pap_impresion(?)', array($anio));
+        $data = DB::select('CALL sp_cap(?)', array($anio));
         return response()->json([
             "status" => 1,
-            "message" => 'Pap Impresion',
+            "message" => 'Cap',
             "data" =>$data
         ]);
     }
